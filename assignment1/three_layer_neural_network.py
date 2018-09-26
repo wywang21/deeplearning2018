@@ -79,7 +79,7 @@ class NeuralNetwork(object):
             return np.tanh(z)
         elif type == "sigmoid":
             return 1/(1 + np.exp(-z))
-        elif type == "reLu":
+        elif type == "relu":
             return z * (z >= 0)
         else:
             raise Exception("Unexpected activation function type.")
