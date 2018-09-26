@@ -133,8 +133,9 @@ class NeuralNetwork(object):
         # Calculating the loss
 
         # YOU IMPLEMENT YOUR CALCULATION OF THE LOSS HERE
-        yExpand = np.concatenate((1 - y, y), axis = 1)
-        data_loss = - np.sum(np.log(self.probs) * yExpand)
+
+        y_expand = y.reshape(y.shape[0], 1) * np.ones((1,2))
+        data_loss = - np.sum(np.log(self.probs) * y_expand)
 
         # Add regulatization term to loss (optional)
         data_loss += self.reg_lambda / 2 * (np.sum(np.square(self.W1)) + np.sum(np.square(self.W2)))
@@ -166,6 +167,11 @@ class NeuralNetwork(object):
         # dW1 = dL/dW1
         # db1 = dL/db1
         dW2 = np.dot(self.a1.T, delta3)
+        db2 = np.sum(delta3, axis = 0)
+        f2 = self.diff_actFun(self.z1, self.actFun_type)
+        delta2 = np.dot(delta3, self.W2.T) * f2
+        dW1 = np.dot(X.T, delta2)
+        db1 = np.sum(delta2, axis = 0)
         return dW1, dW2, db1, db2
 
     def fit_model(self, X, y, epsilon=0.01, num_passes=20000, print_loss=True):
